@@ -1,16 +1,44 @@
 <div class="row">
   <div class="col-sm-11">
-    <select #teamSelect>
-      <option [value]="team.id" *ngFor="let team of teams$ | async">
-        {{team.full_name}}
+    <select
+      #conferenceSelect
+      [ngModel]="selectedConference$ | async"
+      (change)="conferenceChanged($event)"
+    >
+      <option value="">Select Conference</option>
+      <option
+        [value]="conference"
+        *ngFor="let conference of conferences$ | async"
+      >
+        {{ conference }}
       </option>
     </select>
-    <button class="primary" (click)="trackTeam(teamSelect.value)">Track team</button>
+    <select
+      #divisionSelect
+      [ngModel]="selectedDivision$ | async"
+      (change)="divisionChanged($event)"
+    >
+      <option value="">Select Division</option>
+      <option [value]="division" *ngFor="let division of divisions$ | async">
+        {{ division }}
+      </option>
+    </select>
+    <select #teamSelect [ngModel]="(selectedTeam$ | async)?.id ?? 0">
+      <option [value]="0">Select Team</option>
+      <option [value]="team.id" *ngFor="let team of filteredTeams$ | async">
+        {{ team.full_name }}
+      </option>
+    </select>
+    <button class="primary" (click)="trackTeamOrTeams(teamSelect?.value)">
+      Track team
+    </button>
   </div>
-
 </div>
 <div class="row">
-  <app-team-stats class="col-sm-4" *ngFor="let team of nbaService.getTrackedTeams()" [team]="team">
-
+  <app-team-stats
+    class="col-sm-4"
+    *ngFor="let team of nbaService.getTrackedTeams()"
+    [team]="team"
+  >
   </app-team-stats>
 </div>
