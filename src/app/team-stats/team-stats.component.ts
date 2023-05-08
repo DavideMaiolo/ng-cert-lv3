@@ -1,4 +1,5 @@
 import {
+  ChangeDetectionStrategy,
   Component,
   ElementRef,
   Input,
@@ -15,6 +16,7 @@ import { Game, Stats, Team } from '../data.models';
   selector: 'app-team-stats',
   templateUrl: './team-stats.component.html',
   styleUrls: ['./team-stats.component.css'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class TeamStatsComponent implements OnInit, OnChanges {
   @ViewChild('modalRef') modalRef: ElementRef<HTMLDialogElement> | undefined;
@@ -54,9 +56,5 @@ export class TeamStatsComponent implements OnInit, OnChanges {
 
   deleteTeamAndClose() {
     this.nbaService.removeTrackedTeam(this.team);
-    /* optimally the removeTrackedTeam should return a Promise or Observable on which we can wait for success or error
-     * but adjusting the nbaService is not within the Scope of this exercise
-     */
-    this.modalRef?.nativeElement.close();
   }
 }

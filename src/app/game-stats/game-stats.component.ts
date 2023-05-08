@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { Team } from '../data.models';
 import {
   BehaviorSubject,
@@ -17,6 +17,7 @@ import { NbaService } from '../nba.service';
   selector: 'app-game-stats',
   templateUrl: './game-stats.component.html',
   styleUrls: ['./game-stats.component.css'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class GameStatsComponent {
   private selectedConferenceSub$ = new BehaviorSubject<string>('');
@@ -124,5 +125,9 @@ export class GameStatsComponent {
         this.nbaService.addTrackedTeam(team)
       );
     }
+  }
+
+  trackById(index: number, team: Team) {
+    return team.id;
   }
 }
