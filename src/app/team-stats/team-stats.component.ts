@@ -1,4 +1,12 @@
-import { Component, ElementRef, Input, OnInit, ViewChild } from '@angular/core';
+import {
+  Component,
+  ElementRef,
+  Input,
+  OnChanges,
+  OnInit,
+  SimpleChanges,
+  ViewChild,
+} from '@angular/core';
 import { Observable, tap } from 'rxjs';
 import { NbaService } from '../nba.service';
 import { Game, Stats, Team } from '../data.models';
@@ -8,11 +16,13 @@ import { Game, Stats, Team } from '../data.models';
   templateUrl: './team-stats.component.html',
   styleUrls: ['./team-stats.component.css'],
 })
-export class TeamStatsComponent implements OnInit {
+export class TeamStatsComponent implements OnInit, OnChanges {
   @ViewChild('modalRef') modalRef: ElementRef<HTMLDialogElement> | undefined;
 
   @Input()
   team!: Team;
+  @Input()
+  numberOfDays: string = '12';
 
   games$!: Observable<Game[]>;
   stats!: Stats;
@@ -22,7 +32,18 @@ export class TeamStatsComponent implements OnInit {
 
   ngOnInit(): void {
     this.games$ = this.nbaService
-      .getLastResults(this.team, 12)
+      .getLastResults(this.team, Number(this.numberOfDays))
+      .pipe(
+        tap(
+          (games) =>
+            (this.stats = this.nbaService.getStatsFromGames(games, this.team))
+        )
+      );
+  }
+
+  ngOnChanges(changes: SimpleChanges) {
+    this.games$ = this.nbaService
+      .getLastResults(this.team, changes['numberOfDays'].currentValue)
       .pipe(
         tap(
           (games) =>

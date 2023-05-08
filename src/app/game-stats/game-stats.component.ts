@@ -8,7 +8,6 @@ import {
   from,
   map,
   mergeMap,
-  retry,
   tap,
   toArray,
 } from 'rxjs';
@@ -26,6 +25,10 @@ export class GameStatsComponent {
   selectedDivision$ = this.selectedDivisionSub$.asObservable();
   private selectedTeamSub$ = new BehaviorSubject<Team | null>(null);
   selectedTeam$ = this.selectedTeamSub$.asObservable();
+
+  // Step 3
+  private selectedDaysSub$ = new BehaviorSubject<string>('12');
+  selectedDays$ = this.selectedDaysSub$.asObservable();
 
   private teamsSubject$ = new BehaviorSubject<Team[]>([]);
   teams$ = this.teamsSubject$.asObservable();
@@ -104,6 +107,10 @@ export class GameStatsComponent {
   divisionChanged(selectedDivisionEvent: any) {
     this.selectedTeamSub$.next(null);
     this.selectedDivisionSub$.next(selectedDivisionEvent.target.value);
+  }
+
+  numberOfDaysChanged(selectedNumberEvent: any) {
+    this.selectedDaysSub$.next(selectedNumberEvent?.target?.value);
   }
 
   trackTeamOrTeams(teamId?: string) {
